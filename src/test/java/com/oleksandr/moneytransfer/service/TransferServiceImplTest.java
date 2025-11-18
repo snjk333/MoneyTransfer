@@ -8,6 +8,7 @@ import com.oleksandr.moneytransfer.entity.Wallet;
 import com.oleksandr.moneytransfer.exceptions.CurrencyMismatchException;
 import com.oleksandr.moneytransfer.exceptions.InsufficientFundsException;
 import com.oleksandr.moneytransfer.exceptions.SelfTransferException;
+import com.oleksandr.moneytransfer.mapper.TransactionMapper;
 import com.oleksandr.moneytransfer.repository.TransactionRepository;
 import com.oleksandr.moneytransfer.repository.WalletRepository;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ public class TransferServiceImplTest {
 
     @Mock
     TransactionRepository transactionRepository;
+
+    @Mock
+    TransactionMapper transactionMapper;
 
     @InjectMocks
     TransferServiceImpl transferService;
