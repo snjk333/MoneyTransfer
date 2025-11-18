@@ -68,7 +68,17 @@ public class TransferServiceImplTest {
         when(walletRepository.findByIdWithLock(senderId)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findByIdWithLock(receiverId)).thenReturn(Optional.of(receiverWallet));
 
-        when(transactionRepository.save(any())).thenReturn(Transaction.builder().build());
+        when(transactionRepository.save(any(Transaction.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0, Transaction.class));
+
+        when(transactionMapper.toResponse(any(Transaction.class), eq("SUCCESS")))
+                .thenReturn(new TransactionResponse(
+                        UUID.randomUUID(),
+                        senderId,
+                        receiverId,
+                        amountToTransfer,
+                        "SUCCESS")
+                );
 
         TransactionResponse response = transferService.transfer(request);
 
