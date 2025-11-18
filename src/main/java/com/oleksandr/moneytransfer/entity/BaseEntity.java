@@ -1,6 +1,7 @@
 package com.oleksandr.moneytransfer.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
+@EqualsAndHashCode
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
 
