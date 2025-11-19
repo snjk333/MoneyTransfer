@@ -1,10 +1,8 @@
 package com.oleksandr.moneytransfer.service;
 
 import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
-import com.oleksandr.moneytransfer.dto.responce.AccountResponse;
-import com.oleksandr.moneytransfer.dto.responce.TransactionResponse;
+import com.oleksandr.moneytransfer.dto.response.AccountResponse;
 import com.oleksandr.moneytransfer.entity.Account;
-import com.oleksandr.moneytransfer.entity.Transaction;
 import com.oleksandr.moneytransfer.mapper.AccountMapper;
 import com.oleksandr.moneytransfer.repository.AccountRepository;
 import org.junit.jupiter.api.Test;

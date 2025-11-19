@@ -1,6 +1,6 @@
 package com.oleksandr.moneytransfer.mapper;
 
-import com.oleksandr.moneytransfer.dto.responce.WalletResponse;
+import com.oleksandr.moneytransfer.dto.response.WalletResponse;
 import com.oleksandr.moneytransfer.entity.Wallet;
 import org.springframework.stereotype.Component;
 

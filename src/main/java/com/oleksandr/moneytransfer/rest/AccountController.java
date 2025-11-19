@@ -2,7 +2,7 @@ package com.oleksandr.moneytransfer.rest;
 
 
 import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
-import com.oleksandr.moneytransfer.dto.responce.AccountResponse;
+import com.oleksandr.moneytransfer.dto.response.AccountResponse;
 import com.oleksandr.moneytransfer.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

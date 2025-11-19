@@ -1,7 +1,7 @@
 package com.oleksandr.moneytransfer.mapper;
 
 import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
-import com.oleksandr.moneytransfer.dto.responce.AccountResponse;
+import com.oleksandr.moneytransfer.dto.response.AccountResponse;
 import com.oleksandr.moneytransfer.entity.Account;
 import com.oleksandr.moneytransfer.entity.Currency;
 import com.oleksandr.moneytransfer.entity.Wallet;

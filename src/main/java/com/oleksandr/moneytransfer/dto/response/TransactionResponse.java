@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.dto.responce;
+package com.oleksandr.moneytransfer.dto.response;
 
 import java.math.BigDecimal;
 import java.util.UUID;

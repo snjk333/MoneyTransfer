@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.dto.responce;
+package com.oleksandr.moneytransfer.dto.response;
 
 import java.util.List;
 import java.util.UUID;
