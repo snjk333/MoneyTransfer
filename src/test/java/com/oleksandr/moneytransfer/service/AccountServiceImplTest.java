@@ -5,6 +5,7 @@ import com.oleksandr.moneytransfer.dto.response.AccountResponse;
 import com.oleksandr.moneytransfer.entity.Account;
 import com.oleksandr.moneytransfer.mapper.AccountMapper;
 import com.oleksandr.moneytransfer.repository.AccountRepository;
+import com.oleksandr.moneytransfer.service.implementation.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.service;
+package com.oleksandr.moneytransfer.service.interfaces;
 
 import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
 import com.oleksandr.moneytransfer.dto.response.AccountResponse;

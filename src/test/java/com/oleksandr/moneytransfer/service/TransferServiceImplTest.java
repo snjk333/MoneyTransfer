@@ -11,6 +11,7 @@ import com.oleksandr.moneytransfer.exceptions.SelfTransferException;
 import com.oleksandr.moneytransfer.mapper.TransactionMapper;
 import com.oleksandr.moneytransfer.repository.TransactionRepository;
 import com.oleksandr.moneytransfer.repository.WalletRepository;
+import com.oleksandr.moneytransfer.service.implementation.TransferServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;

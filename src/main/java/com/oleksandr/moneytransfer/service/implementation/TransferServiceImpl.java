@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.service;
+package com.oleksandr.moneytransfer.service.implementation;
 
 import com.oleksandr.moneytransfer.dto.response.TransactionResponse;
 import com.oleksandr.moneytransfer.dto.request.TransferRequest;
@@ -11,6 +11,7 @@ import com.oleksandr.moneytransfer.exceptions.WalletNotFoundException;
 import com.oleksandr.moneytransfer.mapper.TransactionMapper;
 import com.oleksandr.moneytransfer.repository.TransactionRepository;
 import com.oleksandr.moneytransfer.repository.WalletRepository;
+import com.oleksandr.moneytransfer.service.interfaces.TransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
