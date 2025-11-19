@@ -14,6 +14,8 @@ import com.oleksandr.moneytransfer.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class TransferServiceImpl implements TransferService {
@@ -29,11 +31,25 @@ public class TransferServiceImpl implements TransferService {
             throw new SelfTransferException("Self transfer failed");
         }
 
-        Wallet fromWallet = walletRepository.findByIdWithLock(request.fromWalletId())
-                .orElseThrow(() -> new WalletNotFoundException("Sender wallet not found."));
+        final UUID lockId1;
+        final UUID lockId2;
 
-        Wallet toWallet = walletRepository.findByIdWithLock(request.toWalletId())
-                .orElseThrow(() -> new WalletNotFoundException("Receiver wallet not found."));
+        if (request.fromWalletId().compareTo(request.toWalletId()) < 0) {
+            lockId1 = request.fromWalletId();
+            lockId2 = request.toWalletId();
+        } else {
+            lockId1 = request.toWalletId();
+            lockId2 = request.fromWalletId();
+        }
+
+        Wallet wallet1 = walletRepository.findByIdWithLock(lockId1)
+                .orElseThrow(() -> new WalletNotFoundException("Wallet " + lockId1 + " not found."));
+
+        Wallet wallet2 = walletRepository.findByIdWithLock(lockId2)
+                .orElseThrow(() -> new WalletNotFoundException("Wallet " + lockId2 + " not found."));
+
+        Wallet fromWallet = wallet1.getId().equals(request.fromWalletId()) ? wallet1 : wallet2;
+        Wallet toWallet = wallet1.getId().equals(request.toWalletId()) ? wallet1 : wallet2;
 
         if(!fromWallet.getCurrency().equals(toWallet.getCurrency())) {
             throw new CurrencyMismatchException("Currency mismatch");

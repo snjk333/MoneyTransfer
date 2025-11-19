@@ -13,6 +13,7 @@ import com.oleksandr.moneytransfer.repository.TransactionRepository;
 import com.oleksandr.moneytransfer.repository.WalletRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -181,5 +182,36 @@ public class TransferServiceImplTest {
 
         verify(walletRepository, never()).findByIdWithLock(any());
         verify(transactionRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldLockWalletsInConsistentOrderToPreventDeadlocks() {
+        //idA_Smaller < idB_Larger
+        UUID idA_Smaller = new UUID(0L, 1L);
+        UUID idB_Larger = new UUID(0L, 2L);
+
+        TransferRequest request = new TransferRequest(idB_Larger, idA_Smaller, BigDecimal.TEN);
+
+        when(walletRepository.findByIdWithLock(idA_Smaller))
+                .thenReturn(Optional.of(Wallet.builder().id(idA_Smaller).balance(BigDecimal.TEN).currency(Currency.USD).build()));
+        when(walletRepository.findByIdWithLock(idB_Larger))
+                .thenReturn(Optional.of(Wallet.builder().id(idB_Larger).balance(BigDecimal.TEN).currency(Currency.USD).build()));
+
+        // NPE
+        when(transactionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(transactionMapper.toResponse(any(), anyString())).thenReturn(new TransactionResponse(idA_Smaller, idB_Larger, idA_Smaller, BigDecimal.TEN, "SUCCESS"));
+
+
+        InOrder inOrder = inOrder(walletRepository);
+
+        // WHEN
+        transferService.transfer(request);
+
+        // THEN
+
+        inOrder.verify(walletRepository).findByIdWithLock(idA_Smaller);
+        inOrder.verify(walletRepository).findByIdWithLock(idB_Larger);
+
+        verify(walletRepository, times(2)).findByIdWithLock(any());
     }
 }
