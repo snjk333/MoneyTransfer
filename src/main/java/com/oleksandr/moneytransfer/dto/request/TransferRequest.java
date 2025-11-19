@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.dto.Request;
+package com.oleksandr.moneytransfer.dto.request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 
 public record TransferRequest(
 
-        @NotNull
+        @NotNull(message = "Sender wallet number is required")
         String fromWalletNumber,
 
-        @NotNull
+        @NotNull(message = "Receiver wallet number is required")
         String toWalletNumber,
 
-        @NotNull
+        @NotNull(message = "Amount is required")
         @DecimalMin(value = "0.01")
         BigDecimal amount
 )
