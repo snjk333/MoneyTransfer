@@ -1,10 +1,9 @@
-package com.oleksandr.moneytransfer.dto;
+package com.oleksandr.moneytransfer.dto.Request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public record TransferRequest(
 

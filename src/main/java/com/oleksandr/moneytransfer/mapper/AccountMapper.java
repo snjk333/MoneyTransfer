@@ -1,7 +1,7 @@
 package com.oleksandr.moneytransfer.mapper;
 
-import com.oleksandr.moneytransfer.dto.AccountResponse;
-import com.oleksandr.moneytransfer.dto.WalletResponse;
+import com.oleksandr.moneytransfer.dto.Responce.AccountResponse;
+import com.oleksandr.moneytransfer.dto.Responce.WalletResponse;
 import com.oleksandr.moneytransfer.entity.Account;
 import com.oleksandr.moneytransfer.entity.Wallet;
 import lombok.RequiredArgsConstructor;

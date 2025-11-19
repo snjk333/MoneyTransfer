@@ -1,6 +1,6 @@
 package com.oleksandr.moneytransfer.mapper;
 
-import com.oleksandr.moneytransfer.dto.WalletResponse;
+import com.oleksandr.moneytransfer.dto.Responce.WalletResponse;
 import com.oleksandr.moneytransfer.entity.Currency;
 import com.oleksandr.moneytransfer.entity.Wallet;
 import org.junit.jupiter.api.Test;

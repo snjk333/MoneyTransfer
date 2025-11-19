@@ -1,4 +1,4 @@
-package com.oleksandr.moneytransfer.dto;
+package com.oleksandr.moneytransfer.dto.Responce;
 
 import com.oleksandr.moneytransfer.entity.Currency;
 

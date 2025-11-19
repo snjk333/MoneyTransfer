@@ -1,7 +1,7 @@
 package com.oleksandr.moneytransfer.service;
 
-import com.oleksandr.moneytransfer.dto.TransactionResponse;
-import com.oleksandr.moneytransfer.dto.TransferRequest;
+import com.oleksandr.moneytransfer.dto.Responce.TransactionResponse;
+import com.oleksandr.moneytransfer.dto.Request.TransferRequest;
 import com.oleksandr.moneytransfer.entity.Transaction;
 import com.oleksandr.moneytransfer.entity.Wallet;
 import com.oleksandr.moneytransfer.exceptions.CurrencyMismatchException;
@@ -13,8 +13,6 @@ import com.oleksandr.moneytransfer.repository.TransactionRepository;
 import com.oleksandr.moneytransfer.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

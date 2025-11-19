@@ -1,7 +1,6 @@
 package com.oleksandr.moneytransfer.mapper;
 
-import com.oleksandr.moneytransfer.dto.AccountResponse;
-import com.oleksandr.moneytransfer.dto.TransactionResponse;
+import com.oleksandr.moneytransfer.dto.Responce.TransactionResponse;
 import com.oleksandr.moneytransfer.entity.Currency;
 import com.oleksandr.moneytransfer.entity.Transaction;
 import com.oleksandr.moneytransfer.entity.Wallet;
