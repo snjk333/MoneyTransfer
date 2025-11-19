@@ -1,11 +1,14 @@
 package com.oleksandr.moneytransfer.mapper;
 
+import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
 import com.oleksandr.moneytransfer.dto.responce.AccountResponse;
 import com.oleksandr.moneytransfer.dto.responce.WalletResponse;
 import com.oleksandr.moneytransfer.entity.Account;
 import com.oleksandr.moneytransfer.entity.Wallet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -13,7 +16,7 @@ import java.util.List;
 public class AccountMapper {
     private final WalletMapper walletMapper;
 
-    public AccountResponse toResponce(Account account) {
+    public AccountResponse toResponse(Account account) {
 
         if (account == null) {
             return null;
@@ -28,5 +31,17 @@ public class AccountMapper {
                 account.getLastName(),
                 walletResponses
         );
+    }
+
+    public Account toCreateEntity(AccountCreationRequest request) {
+
+        if (request == null) {
+            return null;
+        }
+        return Account.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .wallets(new ArrayList<>())
+                .build();
     }
 }

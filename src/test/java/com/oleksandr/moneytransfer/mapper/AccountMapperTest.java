@@ -1,5 +1,6 @@
 package com.oleksandr.moneytransfer.mapper;
 
+import com.oleksandr.moneytransfer.dto.request.AccountCreationRequest;
 import com.oleksandr.moneytransfer.dto.responce.AccountResponse;
 import com.oleksandr.moneytransfer.entity.Account;
 import com.oleksandr.moneytransfer.entity.Currency;
@@ -35,8 +36,7 @@ class AccountMapperTest {
                 .wallets(List.of(wallet))
                 .build();
 
-        AccountResponse response = accountMapper.toResponce(account);
-
+        AccountResponse response = accountMapper.toResponse(account);
 
         assertNotNull(response);
         assertEquals(accountId, response.id());
@@ -47,5 +47,17 @@ class AccountMapperTest {
         assertEquals(walletId, response.wallets().get(0).id());
         assertEquals(walletNumber, response.wallets().get(0).number());
         assertEquals(new BigDecimal("100.0000"), response.wallets().get(0).balance());
+    }
+
+    @Test
+    void shouldMapAccountCreateRequestToAccountEntity(){
+        AccountCreationRequest request = new AccountCreationRequest("First", "Last");
+
+        Account account = accountMapper.toCreateEntity(request);
+
+        assertNotNull(account);
+        assertEquals("First", account.getFirstName());
+        assertEquals("Last", account.getLastName());
+        assertTrue(account.getWallets().isEmpty());
     }
 }
