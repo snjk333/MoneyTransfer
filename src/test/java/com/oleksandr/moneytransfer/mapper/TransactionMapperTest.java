@@ -25,12 +25,14 @@ class TransactionMapperTest {
 
         Wallet walletFrom = Wallet.builder()
                 .id(fromWalletId)
+                .number("10001")
                 .balance(new BigDecimal("100.0000"))
                 .currency(Currency.USD)
                 .build();
 
         Wallet walletTo = Wallet.builder()
                 .id(toWalletId)
+                .number("10002")
                 .balance(new BigDecimal("100.0000"))
                 .currency(Currency.USD)
                 .build();
@@ -47,8 +49,8 @@ class TransactionMapperTest {
 
         assertNotNull(response);
         assertEquals(transactionId, response.transactionId());
-        assertEquals(fromWalletId, response.fromWalletId());
-        assertEquals(toWalletId, response.toWalletId());
+        assertEquals("10001", response.fromWalletNumber());
+        assertEquals("10002", response.toWalletNumber());
         assertEquals(new BigDecimal("100.0000"), response.amount());
 
         assertEquals("SUCCESS", response.status());

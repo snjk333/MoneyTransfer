@@ -24,6 +24,9 @@ public class Wallet extends BaseEntity{
     @Column(nullable = false)
     private Currency currency;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String number;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account owner;

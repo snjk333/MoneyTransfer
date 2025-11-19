@@ -17,8 +17,8 @@ public class TransactionMapper {
 
         return new TransactionResponse(
                 transaction.getId(),
-                transaction.getFromWallet().getId(),
-                transaction.getToWallet().getId(),
+                transaction.getFromWallet().getNumber(),
+                transaction.getToWallet().getNumber(),
                 transaction.getAmount(),
                 status
         );

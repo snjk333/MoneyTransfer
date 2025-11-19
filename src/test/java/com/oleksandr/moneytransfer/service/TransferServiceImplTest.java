@@ -46,28 +46,32 @@ public class TransferServiceImplTest {
         // GIVEN
         UUID senderId = UUID.randomUUID();
         UUID receiverId = UUID.randomUUID();
+        String senderNumber = "10001";
+        String receiverNumber = "10002";
         BigDecimal initialBalance = new BigDecimal("100.00");
         BigDecimal amountToTransfer = new BigDecimal("50.00");
 
         Wallet senderWallet = Wallet.builder()
                 .id(senderId)
+                .number(senderNumber)
                 .balance(initialBalance)
                 .currency(Currency.USD)
                 .build();
         Wallet receiverWallet = Wallet.builder()
                 .id(receiverId)
+                .number(receiverNumber)
                 .balance(initialBalance)
                 .currency(Currency.USD)
                 .build();
 
         TransferRequest request = new TransferRequest(
-                senderId,
-                receiverId,
+                senderNumber,
+                receiverNumber,
                 amountToTransfer
         );
 
-        when(walletRepository.findByIdWithLock(senderId)).thenReturn(Optional.of(senderWallet));
-        when(walletRepository.findByIdWithLock(receiverId)).thenReturn(Optional.of(receiverWallet));
+        when(walletRepository.findByNumberWithLock(senderNumber)).thenReturn(Optional.of(senderWallet));
+        when(walletRepository.findByNumberWithLock(receiverNumber)).thenReturn(Optional.of(receiverWallet));
 
         when(transactionRepository.save(any(Transaction.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0, Transaction.class));
@@ -75,8 +79,8 @@ public class TransferServiceImplTest {
         when(transactionMapper.toResponse(any(Transaction.class), eq("SUCCESS")))
                 .thenReturn(new TransactionResponse(
                         UUID.randomUUID(),
-                        senderId,
-                        receiverId,
+                        senderNumber,
+                        receiverNumber,
                         amountToTransfer,
                         "SUCCESS")
                 );
@@ -85,15 +89,17 @@ public class TransferServiceImplTest {
 
         assertNotNull(response);
         assertEquals(amountToTransfer, response.amount());
-        assertEquals(senderId, response.fromWalletId());
-        assertEquals(receiverId, response.toWalletId());
+
+        assertEquals(senderNumber, response.fromWalletNumber());
+        assertEquals(receiverNumber, response.toWalletNumber());
+
         assertEquals("SUCCESS", response.status());
 
         assertEquals(new BigDecimal("50.00"), senderWallet.getBalance());
         assertEquals(new BigDecimal("150.00"), receiverWallet.getBalance());
 
-        verify(walletRepository, times(1)).findByIdWithLock(senderId);
-        verify(walletRepository, times(1)).findByIdWithLock(receiverId);
+        verify(walletRepository, times(1)).findByNumberWithLock(senderNumber);
+        verify(walletRepository, times(1)).findByNumberWithLock(receiverNumber);
 
         verify(transactionRepository, times(1)).save(any(Transaction.class));
         verify(walletRepository, times(1)).save(senderWallet);
@@ -104,23 +110,27 @@ public class TransferServiceImplTest {
     void shouldThrowExceptionWhenInsufficientFunds() {
         UUID senderId = UUID.randomUUID();
         UUID receiverId = UUID.randomUUID();
+        String senderNumber = "10001";
+        String receiverNumber = "10002";
         BigDecimal largeAmount = new BigDecimal("1000.00");
 
         Wallet sender = Wallet.builder()
                 .id(senderId)
+                .number(senderNumber)
                 .balance(new BigDecimal("100.00"))
                 .currency(Currency.USD)
                 .build();
 
         TransferRequest request = new TransferRequest(
-                senderId,
-                receiverId,
+                senderNumber,
+                receiverNumber,
                 largeAmount
         );
 
-        when(walletRepository.findByIdWithLock(senderId)).thenReturn(Optional.of(sender));
-        when(walletRepository.findByIdWithLock(receiverId)).thenReturn(Optional.of(
-                Wallet.builder().id(receiverId).balance(BigDecimal.ZERO).currency(Currency.USD).build()));
+        when(walletRepository.findByNumberWithLock(senderNumber)).thenReturn(Optional.of(sender));
+        when(walletRepository.findByNumberWithLock(receiverNumber)).thenReturn(Optional.of(
+                Wallet.builder().id(receiverId).number(receiverNumber).balance(BigDecimal.ZERO)
+                        .currency(Currency.USD).build()));
 
         // WHEN & THEN
         assertThrows(InsufficientFundsException.class, () -> {
@@ -135,11 +145,14 @@ public class TransferServiceImplTest {
     void shouldThrowExceptionWhenCurrencyMismatch() {
         UUID senderId = UUID.randomUUID();
         UUID receiverId = UUID.randomUUID();
+        String senderNumber = "10001";
+        String receiverNumber = "10002";
         BigDecimal amount = new BigDecimal("50.00");
 
         //USD
         Wallet sender = Wallet.builder()
                 .id(senderId)
+                .number(senderNumber)
                 .balance(new BigDecimal("100.00"))
                 .currency(Currency.USD)
                 .build();
@@ -147,18 +160,19 @@ public class TransferServiceImplTest {
         //EUR
         Wallet receiver = Wallet.builder()
                 .id(receiverId)
+                .number(receiverNumber)
                 .balance(new BigDecimal("10.00"))
                 .currency(Currency.EUR)
                 .build();
 
         TransferRequest request = new TransferRequest(
-                senderId,
-                receiverId,
+                senderNumber,
+                receiverNumber,
                 amount
         );
 
-        when(walletRepository.findByIdWithLock(senderId)).thenReturn(Optional.of(sender));
-        when(walletRepository.findByIdWithLock(receiverId)).thenReturn(Optional.of(receiver));
+        when(walletRepository.findByNumberWithLock(senderNumber)).thenReturn(Optional.of(sender));
+        when(walletRepository.findByNumberWithLock(receiverNumber)).thenReturn(Optional.of(receiver));
 
         // WHEN & THEN
         assertThrows(CurrencyMismatchException.class, () -> {
@@ -171,16 +185,16 @@ public class TransferServiceImplTest {
 
     @Test
     void shouldThrowExceptionWhenSenderIsReceiver() {
-        UUID walletId = UUID.randomUUID();
+        String walletNumber = "10001";
         BigDecimal amount = new BigDecimal("10.00");
 
-        TransferRequest request = new TransferRequest(walletId, walletId, amount);
+        TransferRequest request = new TransferRequest(walletNumber, walletNumber, amount);
 
         assertThrows(SelfTransferException.class, () -> {
             transferService.transfer(request);
         });
 
-        verify(walletRepository, never()).findByIdWithLock(any());
+        verify(walletRepository, never()).findByNumberWithLock(any());
         verify(transactionRepository, never()).save(any());
     }
 
@@ -190,16 +204,18 @@ public class TransferServiceImplTest {
         UUID idA_Smaller = new UUID(0L, 1L);
         UUID idB_Larger = new UUID(0L, 2L);
 
-        TransferRequest request = new TransferRequest(idB_Larger, idA_Smaller, BigDecimal.TEN);
+        String numberA_Smaller = "10000";
+        String numberB_Larger = "90009";
 
-        when(walletRepository.findByIdWithLock(idA_Smaller))
-                .thenReturn(Optional.of(Wallet.builder().id(idA_Smaller).balance(BigDecimal.TEN).currency(Currency.USD).build()));
-        when(walletRepository.findByIdWithLock(idB_Larger))
-                .thenReturn(Optional.of(Wallet.builder().id(idB_Larger).balance(BigDecimal.TEN).currency(Currency.USD).build()));
+        TransferRequest request = new TransferRequest(numberB_Larger, numberA_Smaller, BigDecimal.TEN);
 
-        // NPE
+        when(walletRepository.findByNumberWithLock(numberA_Smaller))
+                .thenReturn(Optional.of(Wallet.builder().id(idA_Smaller).number(numberA_Smaller).balance(BigDecimal.TEN).currency(Currency.USD).build()));
+        when(walletRepository.findByNumberWithLock(numberB_Larger))
+                .thenReturn(Optional.of(Wallet.builder().id(idB_Larger).number(numberB_Larger).balance(BigDecimal.TEN).currency(Currency.USD).build()));
+
         when(transactionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(transactionMapper.toResponse(any(), anyString())).thenReturn(new TransactionResponse(idA_Smaller, idB_Larger, idA_Smaller, BigDecimal.TEN, "SUCCESS"));
+        when(transactionMapper.toResponse(any(), anyString())).thenReturn(new TransactionResponse(idA_Smaller, numberA_Smaller, numberB_Larger, BigDecimal.TEN, "SUCCESS"));
 
 
         InOrder inOrder = inOrder(walletRepository);
@@ -208,10 +224,9 @@ public class TransferServiceImplTest {
         transferService.transfer(request);
 
         // THEN
+        inOrder.verify(walletRepository).findByNumberWithLock(numberA_Smaller);
+        inOrder.verify(walletRepository).findByNumberWithLock(numberB_Larger);
 
-        inOrder.verify(walletRepository).findByIdWithLock(idA_Smaller);
-        inOrder.verify(walletRepository).findByIdWithLock(idB_Larger);
-
-        verify(walletRepository, times(2)).findByIdWithLock(any());
+        verify(walletRepository, times(2)).findByNumberWithLock(any());
     }
 }

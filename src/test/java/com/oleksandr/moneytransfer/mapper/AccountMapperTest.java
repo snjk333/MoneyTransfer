@@ -19,9 +19,11 @@ class AccountMapperTest {
     void shouldMapAccountToResponseDto(){
         UUID accountId = UUID.randomUUID();
         UUID walletId = UUID.randomUUID();
+        String walletNumber = "10001";
 
         Wallet wallet = Wallet.builder()
                 .id(walletId)
+                .number(walletNumber)
                 .balance(new BigDecimal("100.0000"))
                 .currency(Currency.USD)
                 .build();
@@ -43,6 +45,7 @@ class AccountMapperTest {
 
         assertEquals(1, response.wallets().size());
         assertEquals(walletId, response.wallets().get(0).id());
+        assertEquals(walletNumber, response.wallets().get(0).number());
         assertEquals(new BigDecimal("100.0000"), response.wallets().get(0).balance());
     }
 }

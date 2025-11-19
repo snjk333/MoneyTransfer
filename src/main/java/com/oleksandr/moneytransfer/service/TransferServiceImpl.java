@@ -27,29 +27,33 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public TransactionResponse transfer(TransferRequest request) {
 
-        if(request.fromWalletId().equals(request.toWalletId())) {
+        if(request.fromWalletNumber().equals(request.toWalletNumber())) {
             throw new SelfTransferException("Self transfer failed");
         }
 
-        final UUID lockId1;
-        final UUID lockId2;
+        final String lockId1;
+        final String lockId2;
 
-        if (request.fromWalletId().compareTo(request.toWalletId()) < 0) {
-            lockId1 = request.fromWalletId();
-            lockId2 = request.toWalletId();
+        if (request.fromWalletNumber().compareTo(request.toWalletNumber()) < 0) {
+            lockId1 = request.fromWalletNumber();
+            lockId2 = request.toWalletNumber();
         } else {
-            lockId1 = request.toWalletId();
-            lockId2 = request.fromWalletId();
+            lockId1 = request.toWalletNumber();
+            lockId2 = request.fromWalletNumber();
         }
 
-        Wallet wallet1 = walletRepository.findByIdWithLock(lockId1)
+        Wallet wallet1 = walletRepository.findByNumberWithLock(lockId1)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet " + lockId1 + " not found."));
 
-        Wallet wallet2 = walletRepository.findByIdWithLock(lockId2)
+        Wallet wallet2 = walletRepository.findByNumberWithLock(lockId2)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet " + lockId2 + " not found."));
 
-        Wallet fromWallet = wallet1.getId().equals(request.fromWalletId()) ? wallet1 : wallet2;
-        Wallet toWallet = wallet1.getId().equals(request.toWalletId()) ? wallet1 : wallet2;
+        Wallet fromWallet = wallet1.getNumber().equals(request.fromWalletNumber()) ? wallet1 : wallet2;
+        Wallet toWallet = wallet1.getNumber().equals(request.toWalletNumber()) ? wallet1 : wallet2;
+
+        if(fromWallet.getId().equals(toWallet.getId())) {
+            throw new IllegalStateException("Database consistency failure. Different wallet numbers map to the same ID.");
+        }
 
         if(!fromWallet.getCurrency().equals(toWallet.getCurrency())) {
             throw new CurrencyMismatchException("Currency mismatch");

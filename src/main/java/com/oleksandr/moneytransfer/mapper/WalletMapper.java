@@ -17,6 +17,7 @@ public class WalletMapper {
         }
         return new WalletResponse(
                 wallet.getId(),
+                wallet.getNumber(),
                 wallet.getBalance(),
                 wallet.getCurrency()
         );
