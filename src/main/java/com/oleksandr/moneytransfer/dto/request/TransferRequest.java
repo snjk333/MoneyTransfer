@@ -14,7 +14,7 @@ public record TransferRequest(
         String toWalletNumber,
 
         @NotNull(message = "Amount is required")
-        @DecimalMin(value = "0.01")
+        @DecimalMin(value = "0.01", message = "Transfer amount must be positive")
         BigDecimal amount
 )
 { }
