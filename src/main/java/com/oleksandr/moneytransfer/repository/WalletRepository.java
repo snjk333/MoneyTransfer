@@ -23,4 +23,5 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
 
     boolean existsByNumber(String number);
 
+    Optional<Wallet> findByNumber(String number);
 }
